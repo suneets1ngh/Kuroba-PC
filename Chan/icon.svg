@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <rect width="128" height="128" rx="28" fill="#14161A"/>
+  <rect x="10" y="10" width="108" height="108" rx="22" stroke="#2D333B" stroke-width="4"/>
+  <!-- Stem -->
+  <path d="M64 68 C64 84, 58 94, 48 102" stroke="#D32F2F" stroke-width="7" stroke-linecap="round"/>
+  <!-- 4 Clover Leaves -->
+  <g fill="#E53935">
+    <!-- Top leaf -->
+    <path d="M64 62 C50 48, 42 30, 56 24 C61 22, 64 28, 64 31 C64 28, 67 22, 72 24 C86 30, 78 48, 64 62 Z"/>
+    <!-- Right leaf -->
+    <path d="M66 64 C80 50, 98 42, 104 56 C106 61, 100 64, 97 64 C100 64, 106 67, 104 72 C98 86, 80 78, 66 64 Z"/>
+    <!-- Bottom leaf -->
+    <path d="M64 66 C78 80, 86 98, 72 104 C67 106, 64 100, 64 97 C64 100, 61 106, 56 104 C42 98, 50 80, 64 66 Z"/>
+    <!-- Left leaf -->
+    <path d="M62 64 C48 78, 30 86, 24 72 C22 67, 28 64, 31 64 C28 64, 22 61, 24 56 C30 42, 48 50, 62 64 Z"/>
+  </g>
+  <circle cx="64" cy="64" r="5" fill="#FF6B6B"/>
+</svg>

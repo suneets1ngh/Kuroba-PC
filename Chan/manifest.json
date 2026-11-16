@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Kuroba Lite — Imageboard Browser",
+  "version": "1.0.0",
+  "description": "Minimalist Chrome-based imageboard thin client with multi-chan support, NSFW filter, and media downloader.",
+  "icons": {
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  },
+  "action": {
+    "default_title": "Open Kuroba Lite",
+    "default_icon": {
+      "48": "icon-48.png",
+      "128": "icon-128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "downloads"
+  ],
+  "host_permissions": [
+    "*://*.4cdn.org/*",
+    "*://*.4chan.org/*",
+    "*://*.lainchan.org/*",
+    "*://*.8kun.top/*",
+    "*://*.128ducks.com/*",
+    "*://*.2ch.hk/*",
+    "*://*.arisuchan.jp/*",
+    "*://*.wizchan.org/*",
+    "*://*.sushigirl.us/*",
+    "*://*.kohlchan.net/*"
+  ]
+}

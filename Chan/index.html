@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kuroba PC - Imageboard Thin Client</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="appBgLayer" class="app-bg-layer" aria-hidden="true">
+    <div id="appBgDim" class="app-bg-dim"></div>
+  </div>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand" title="Kuroba Lite">
+        <span class="brand-dot"></span>
+        <span class="brand-name">Kuroba<span class="brand-lite">PC</span></span>
+      </div>
+
+      <!-- Enabled Chan Selector -->
+      <select id="siteSelect" class="control-select" aria-label="Select Chan"></select>
+
+      <!-- Searchable Boards Dropdown -->
+      <div class="board-dropdown" id="boardDropdown">
+        <button id="boardDropdownBtn" class="board-dropdown-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+          <span id="boardBtnLabel">Select board...</span>
+          <span class="chevron">▾</span>
+        </button>
+        <div id="boardDropdownMenu" class="board-dropdown-menu hidden" role="listbox">
+          <div class="board-search-wrap">
+            <input id="boardSearchInput" type="search" placeholder="Filter boards (e.g. g, tech, a)..." autocomplete="off">
+          </div>
+          <div id="boardList" class="board-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topbar-center">
+      <input id="searchInput" class="search-input" type="search" placeholder="Search threads or posts..." autocomplete="off">
+    </div>
+
+    <div class="topbar-right">
+      <button id="nsfwToggleBtn" class="pill-btn" type="button" title="Toggle NSFW Filter">
+        <span class="pill-dot"></span>
+        <span id="nsfwToggleLabel">SFW</span>
+      </button>
+      <button id="bookmarksBtn" class="icon-btn" type="button" title="Bookmarks">
+        ★ <span id="bookmarksCount" class="badge hidden">0</span>
+      </button>
+      <button id="settingsBtn" class="icon-btn" type="button" title="Chan Toggles & Settings">
+        ⚙
+      </button>
+    </div>
+  </header>
+
+  <div class="subbar" id="subbar">
+    <!-- Catalog controls -->
+    <div id="catalogControls" class="subbar-group">
+      <span id="catalogStatus" class="status-text">Ready</span>
+      <div class="subbar-actions">
+        <select id="sortSelect" class="control-select compact" aria-label="Sort catalog">
+          <option value="bump">Bump Order</option>
+          <option value="replies">Most Replies</option>
+          <option value="images">Most Images</option>
+          <option value="newest">Newest</option>
+        </select>
+        <button id="viewModeBtn" class="btn-ghost" type="button" title="Toggle Grid / List">Grid</button>
+        <button id="refreshCatalogBtn" class="btn-ghost" type="button" title="Refresh Catalog">↻ Refresh</button>
+      </div>
+    </div>
+
+    <!-- Thread controls -->
+    <div id="threadControls" class="subbar-group hidden">
+      <div class="subbar-left">
+        <button id="backToCatalogBtn" class="btn-ghost" type="button">← Catalog</button>
+        <span id="threadTitle" class="thread-title">Thread</span>
+        <span id="threadStats" class="status-text"></span>
+      </div>
+      <div class="subbar-actions">
+        <button id="bookmarkThreadBtn" class="btn-ghost" type="button">☆ Bookmark</button>
+        <button id="downloadThreadZipBtn" class="btn-primary" type="button" title="Download all thread media as ZIP">
+          ⬇ Download All (.zip)
+        </button>
+        <button id="refreshThreadBtn" class="btn-ghost" type="button" title="Refresh Thread">↻</button>
+      </div>
+    </div>
+  </div>
+
+  <main id="mainContent" class="main-content">
+    <div id="catalogView" class="catalog-grid"></div>
+    <div id="threadView" class="thread-view hidden"></div>
+    <div id="emptyState" class="empty-state hidden"></div>
+  </main>
+
+  <!-- Settings & Chan Toggles Modal -->
+  <div id="settingsModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="settingsTitle">Settings &amp; Chan Toggles</h2>
+        <button id="closeSettingsBtn" class="icon-btn" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <section class="settings-section">
+          <h3>Supported Chans</h3>
+          <p class="hint">Toggle which imageboards appear in your site switcher.</p>
+          <div id="siteTogglesList" class="toggle-grid"></div>
+        </section>
+
+        <section class="settings-section">
+          <h3>NSFW Filter</h3>
+          <label class="switch-row">
+            <span>Hide NSFW boards in dropdown</span>
+            <input type="checkbox" id="hideNsfwBoardsChk">
+          </label>
+          <label class="switch-row">
+            <span>Blur media on NSFW boards (hover/click to reveal)</span>
+            <input type="checkbox" id="blurNsfwMediaChk">
+          </label>
+        </section>
+
+        <section class="settings-section">
+          <h3>Appearance &amp; Background</h3>
+          <div class="field-row">
+            <label for="themeSelect">Theme</label>
+            <select id="themeSelect" class="control-select">
+              <option value="dark">Dark (Kuroba)</option>
+              <option value="amoled">AMOLED Black</option>
+              <option value="light">Light</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <label for="bgColorPicker">Background Color</label>
+            <div class="inline-controls">
+              <input type="color" id="bgColorPicker" class="color-picker" value="#0d1117">
+              <input type="text" id="bgColorText" class="control-select compact-text" placeholder="Theme default">
+              <button type="button" id="resetBgColorBtn" class="btn-ghost">Reset</button>
+            </div>
+          </div>
+          <div class="field-row stack">
+            <label for="bgImageUrlInput">Background Image (URL or local file)</label>
+            <div class="inline-controls full">
+              <input type="text" id="bgImageUrlInput" class="control-select flex-1" placeholder="https://... or upload an image">
+              <label class="btn-ghost file-btn">
+                Upload
+                <input type="file" id="bgImageFileInput" accept="image/*" hidden>
+              </label>
+              <button type="button" id="clearBgImageBtn" class="btn-ghost">Clear</button>
+            </div>
+          </div>
+          <div class="field-row">
+            <label for="bgFitSelect">Background Fit</label>
+            <select id="bgFitSelect" class="control-select">
+              <option value="cover">Cover</option>
+              <option value="contain">Contain</option>
+              <option value="repeat">Tile (Repeat)</option>
+              <option value="center">Center</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <label for="bgDimRange">Background Dimmer (<span id="bgDimValue">35%</span>)</label>
+            <input type="range" id="bgDimRange" min="0" max="90" step="5" value="35">
+          </div>
+          <div class="field-row">
+            <label for="autoRefreshSelect">Thread Auto-Refresh</label>
+            <select id="autoRefreshSelect" class="control-select">
+              <option value="0">Off</option>
+              <option value="30">Every 30s</option>
+              <option value="60">Every 60s</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <h3>Proxy Connection</h3>
+          <p class="hint">Route chan API &amp; media requests through an upstream HTTP/HTTPS proxy (in local server mode) or a custom CORS proxy URL.</p>
+          <div class="field-row">
+            <label for="proxyModeSelect">Proxy Mode</label>
+            <select id="proxyModeSelect" class="control-select">
+              <option value="none">Default (Direct / Built-in Local Proxy)</option>
+              <option value="upstream">Upstream HTTP/HTTPS Proxy (server.py)</option>
+              <option value="custom">Custom CORS Proxy URL</option>
+            </select>
+          </div>
+          <div class="field-row stack" id="proxyUrlRow">
+            <label for="proxyUrlInput">Proxy Address</label>
+            <div class="inline-controls full">
+              <input type="text" id="proxyUrlInput" class="control-select flex-1" placeholder="http://127.0.0.1:8080">
+              <button type="button" id="applyProxyBtn" class="btn-primary">Apply &amp; Test</button>
+            </div>
+            <span id="proxyStatusText" class="hint" style="margin:4px 0 0 0"></span>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bookmarks Modal -->
+  <div id="bookmarksModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="bookmarksTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="bookmarksTitle">Saved Threads</h2>
+        <button id="closeBookmarksBtn" class="icon-btn" type="button">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="bookmarksList" class="bookmarks-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Media Lightbox -->
+  <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true">
+    <div class="lightbox-bar">
+      <span id="lightboxInfo" class="lightbox-info"></span>
+      <div class="lightbox-actions">
+        <button id="lightboxDownloadBtn" class="btn-primary" type="button">⬇ Download</button>
+        <button id="lightboxPrevBtn" class="icon-btn" type="button" title="Previous (←)">◀</button>
+        <button id="lightboxNextBtn" class="icon-btn" type="button" title="Next (→)">▶</button>
+        <button id="lightboxCloseBtn" class="icon-btn" type="button" title="Close (Esc)">✕</button>
+      </div>
+    </div>
+    <div id="lightboxStage" class="lightbox-stage"></div>
+  </div>
+
+  <!-- Quote Hover Tooltip -->
+  <div id="quoteTooltip" class="quote-tooltip hidden"></div>
+
+  <!-- Download / Status Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="zip.js"></script>
+  <script src="sites.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "Kuroba Lite — Imageboard Thin Client",
+  "short_name": "Kuroba Lite",
+  "description": "Lightweight minimalist Chrome-based imageboard browser with NSFW filter, multi-chan support, and media downloader.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#161b22",
+  "icons": [
+    {
+      "src": "icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
